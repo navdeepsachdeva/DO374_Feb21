@@ -1,0 +1,6 @@
+---
+# tasks file for print_role
+
+- name: Task in Role
+  ansible.builtin.debug:
+    msg: "{{ inventory_hostname }} = {{ print_role_floor }}"

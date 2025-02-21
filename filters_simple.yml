@@ -1,0 +1,22 @@
+- name: Simple Filters Demo
+  hosts: servera*
+  gather_facts: false
+  vars:
+    var1: "hello"
+    var2: "4"
+    mylist: [ 4, [8, [10, [6, 2], 4], 10, 2 ]]
+  tasks:
+    - name: Print
+      ansible.builtin.debug:
+        msg: >
+            Jinja2 expressions also support filters.
+            Filters are used to modify or 
+            process the value from the 
+            variable that is placed {{ var1 | upper }}
+            {{ (var2 | int) + 5 }}
+            in the  {{ 'playbook' | capitalize }}
+            or {{ (myvar | default("Not Available") | length) + 5 }}
+            AND {{ item }}
+            and {{ mylist | flatten | unique | sort }}
+      when: item != 4
+      loop: "{{ mylist | flatten | unique | sort }}"

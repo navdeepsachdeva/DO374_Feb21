@@ -1,0 +1,30 @@
+- name: Privilege Escalation Demo
+  hosts: servera*
+  gather_facts: true
+  become: false
+  roles:
+    - role: security_server
+      become: true
+
+  tasks:
+    - name: Outside Block Task 1
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} = {{ print_role_floor }}"
+
+    - name: Privilege Escalation for Block
+      block:
+        - name: Install Apache Httpd Server
+          ansible.builtin.dnf:
+            name: httpd
+            state: present
+        
+        - name: Deploy Web Page
+          ansible.builtin.copy:
+            content: "Hello CLass"
+            dest: /var/www/html/index.html
+            mode: 0644
+      become: true
+
+    - name: Outside Block Task 2
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} = {{ print_role_floor }}"

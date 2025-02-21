@@ -1,0 +1,29 @@
+---
+ansible-navigator:
+  ansible:
+    config:
+      help: false
+    inventory:
+      entries:
+      - /home/student/do374/acme_inventory
+      help: false
+  execution-environment:
+    container-engine: podman
+    enabled: true
+    image: hub.lab.example.com/ee-supported-rhel8:latest
+    environment-variables:
+      set:
+        ANSIBLE_PIPELINING: true
+    pull:
+      policy: missing
+  images:
+    details:
+    - everything
+  logging:
+    append: true
+    file: /home/student/do374/ansible-navigator.log
+    level: warning
+  mode: stdout
+  playbook-artifact:
+    enable: false
+    save-as: '{playbook_dir}/{playbook_name}-artifact-{time_stamp}.json'

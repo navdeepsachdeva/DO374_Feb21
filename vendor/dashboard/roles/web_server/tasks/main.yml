@@ -1,0 +1,31 @@
+---
+# tasks file for web_server
+
+- name: Run all Pending Handlers Right NOW
+  ansible.builtin.meta: flush_handlers
+
+- name: Install Apache Httpd Server
+  ansible.builtin.dnf:
+    name: "{{ web_server_package }}"
+    state: present
+  register: dariusz_output
+  # changed_when: not dariusz_output.changed
+  notify:
+    - Restart Web Service
+    - Package Installed
+
+- name: Print Output
+  ansible.builtin.debug:
+    msg: "{{ dariusz_output }}"
+
+- name: Deploy Web Page
+  ansible.builtin.copy:
+    content: "{{ web_server_content }}"
+    dest: "{{ web_server_index_page }}"
+    mode: 0644
+  notify:
+    - Restart Web Service
+    - App Deployed 1
+    # - App Deployed 2
+    # - App Deployed 3
+    # - App Deployed 4

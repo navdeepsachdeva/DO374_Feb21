@@ -1,0 +1,37 @@
+- name: Delegate Demo
+  hosts: servera*
+  gather_facts: true
+  tasks:
+    - name: Open Security Port
+      ansible.posix.firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: true
+      become: true
+
+    - name: Privilege Escalation for Block
+      block:
+        - name: Install Apache Httpd Server
+          ansible.builtin.dnf:
+            name: httpd
+            state: present
+ 
+        - name: Deploy Web Page
+          ansible.builtin.copy:
+            content: "Hello CLass"
+            dest: /var/www/html/index.html
+            mode: 0644
+      delegate_to: serverb.lab.example.com
+      become: true
+
+    - name: Create a user with Facts from serverA
+      ansible.builtin.user:
+        name: "{{ ansible_facts.ansible_local.bank.user_info.emp_name }}"
+        uid: "{{ ansible_facts.ansible_local.bank.user_info.emp_id }}"
+        password: "{{ lookup('ansible.builtin.password', './{{ ansible_facts.ansible_local.bank.user_info.emp_name }}.txt chars=ascii_letters,ascii_uppercase,digits,punctuation length=10 encrypt=sha512_crypt') }}"
+        # password: "{{ 'redhat@123' | password_hash('sha512') }}"
+        comment: "{{ ansible_facts.ansible_local.bank.bank_info.bank_manager | capitalize }} {{ ansible_facts.ansible_local.bank.bank_info.bank_location | upper }}"
+      delegate_to: serverb.lab.example.com
+      delegate_facts: true
+      become: true

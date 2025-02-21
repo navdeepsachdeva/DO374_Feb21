@@ -1,0 +1,17 @@
+dev:
+  hosts:
+    servera.lab.example.com: {}
+    serverb.lab.example.com: {}
+
+
+test:
+  hosts:
+    serverc.lab.example.com: {}
+    serverd.lab.example.com:
+      t1: UU1
+  vars:
+    t1: TT1
+
+prod:
+  hosts:
+    server[e:f].lab.example.com: {}

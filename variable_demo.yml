@@ -1,0 +1,65 @@
+- name: Variable Test
+  hosts: dev,test
+  vars:
+    print_role_floor: "Level 12 Play Vars Bad Practise PLAY_LEVEL"
+
+  vars_prompt:
+    - name: print_role_floor
+      prompt: "Dev Env Only Which Floor ?"
+      private: false
+
+  vars_files:
+    - ./vars/outside_vars.yml
+
+  gather_facts: false
+  roles:
+    - role: print_role
+
+  tasks:
+  - name: Set the Fact
+    ansible.builtin.set_fact:
+      print_role_floor: "Level 19 System Fact"
+
+  - name: Read Var File Dynamically
+    ansible.builtin.include_vars:
+      file: vars/external_vars.yml
+    when: myvar1 is not defined
+
+  - name: Role with Condition and own variable
+    ansible.builtin.include_role:
+      name: print_role
+    vars:
+      print_role_floor: "Level 20 include role params"
+    when: myvar1 is not defined
+
+  - name: Include a Task File
+    ansible.builtin.include_tasks: tasks/external_tasks1.yml
+    vars:
+      print_role_floor: "Level 21 External Tasksi Inlcude Params"
+    when: myvar1 is not defined
+
+
+  - name: Outside Block Task 1
+    ansible.builtin.debug:
+      msg: "{{ inventory_hostname }} = {{ print_role_floor }}"
+
+  - name: Group/Block of Tasks
+    block:
+      - name: Inside Block Task 2
+        ansible.builtin.debug:
+          msg: "{{ inventory_hostname }} = {{ print_role_floor }}"
+        vars:
+          print_role_floor: "Level 17 Task Vars TASK_LEVEL"
+
+      - name: Inside Block Task 3
+        ansible.builtin.debug:
+          msg: "{{ inventory_hostname }} = {{ print_role_floor }}"
+    when: myvar1 is not defined
+    vars:
+       print_role_floor: "Level 16 Block Vars Block_LEVEL"
+
+  - name: Outside Block Task 4
+    ansible.builtin.debug:
+      msg: "{{ inventory_hostname }} = {{ print_role_floor }}"
+
+# ansible-navigator run variable_demo.yml --limit servera*  -e 'print_role_floor="Level 22 God Level Gloal Scope"'

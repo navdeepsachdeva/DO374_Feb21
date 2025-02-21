@@ -1,0 +1,98 @@
+- name: Filter with Loops
+  hosts: servera*
+  gather_facts: true
+  vars_files:
+    - vars/outside_vars.yml
+    - vars/users.yml
+  tasks:
+    - name: Print Simple List
+      ansible.builtin.debug:
+        msg: "{{ item }}"
+      loop: "{{ lookup('ansible.builtin.list', simple_list ) }}"
+      # with_items: "{{ simple_list }}"
+      # loop: "{{ simple_list }}"
+
+    - name: Print Complex List
+      ansible.builtin.debug:
+        msg: "{{ item.fn }} == {{ item.ln }}"
+      loop: "{{ lookup('ansible.builtin.list', complex_list ) }}"
+      # with_list: "{{ complex_list }}"
+      # loop: "{{ complex_list }}"
+
+    - name: Print Simple Dictionary
+      ansible.builtin.debug:
+        msg: "{{ item.key }} // {{ item.value }}"
+      loop: "{{ lookup('ansible.builtin.dict', user_dict ) }}"
+      # with_dict: "{{ user_dict }}"
+      # loop: "{{ user_dict | dict2items }}"
+
+    - name: Sequence Check lookup vs query
+      ansible.builtin.debug:
+        msg: "{{ query('ansible.builtin.sequence', 'start=0 end=4 format=eth%x' ) }}"
+
+    - name: Print a Sequence
+      ansible.builtin.debug:
+        msg: "{{ item }}"
+      loop: "{{ query('ansible.builtin.sequence', 'start=0 end=4 format=eth%x' ) }}"
+      # with_sequence: start=0 end=4 format=eth%x
+
+    - name: Print Env Variables
+      ansible.builtin.debug:
+        msg: "{{ item }}"
+      loop: "{{ query('ansible.builtin.env', 'SHELL','PATH','USER' ) }}"
+      # with_env:
+      #   - SHELL
+      #   - PATH
+      #   - USER
+    - name: List the files in Folder 
+      ansible.builtin.debug:
+        msg: "{{ item }}"
+      loop: "{{ query('ansible.builtin.fileglob', 'vars/*') }}"
+      # with_fileglob:
+      #   - vars/*
+
+
+    - name: Read File
+      ansible.builtin.debug:
+        msg: "{{ lookup('ansible.builtin.file', 'tasks/external_tasks12.yml',errors='warn') }}"
+      #   msg: "{{ item }}"
+      # loop: "{{ lookup('ansible.builtin.file', 'tasks/external_tasks1.yml') }}"
+      # with_file:
+      #   - ./vars/external_vars.yml
+
+    - name: Read file Line by Line
+      ansible.builtin.debug:
+        msg: "{{ item }}"
+      loop: "{{ query('ansible.builtin.lines', 'cat tasks/external_tasks1.yml') }}"
+      # with_lines:
+      #   - cat tasks/external_tasks1.yml
+    - name: Print Template before saving
+      ansible.builtin.debug:
+        msg: "{{ lookup('ansible.builtin.template', 'j2/simple_template.j2') }}"
+
+    - name: Execute template
+      ansible.builtin.template:
+        src: j2/simple_template.j2
+        dest: /tmp/info.txt
+
+    - name: Subelements List Sub List
+      ansible.builtin.debug:
+        msg: "{{ item[1] }} ++ {{ item[0].name }}"
+      loop: "{{ query('ansible.builtin.subelements', users, 'mysql.hosts') }}"
+      # with_subelements: 
+      #   - "{{ users }}"
+      #   - mysql.hosts
+        # - authorized
+
+    # - name: 
+    #   ansible.builtin.debug:
+    #     msg: ""
+    # - name: Read a File with slurp Modules
+    #   ansible.builtin.slurp:
+    #     src: /etc/passwd
+    #     # ./vars/external_vars.yml
+    #   register: slurped_file
+    # 
+    # - name: Print returned information
+    #   ansible.builtin.debug:
+    #     msg: "{{ slurped_file['content'] | b64decode }}"

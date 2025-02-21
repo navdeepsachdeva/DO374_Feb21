@@ -1,0 +1,56 @@
+- name: Roles Demo
+  hosts: servera*
+  gather_facts: true
+
+  pre_tasks:
+    - name: Check Pre-requsites
+      ansible.builtin.assert:
+        that:
+          - ansible_facts['architecture'] == "x86_64"
+          - ansible_memory_mb.real.free > 100
+        fail_msg: "Not Enough Resources"
+        success_msg: "Good TO Go"
+
+    - name: Email to Customer Down Services
+      ansible.builtin.shell: sleep 2
+      notify:
+        - services_down
+
+  tasks:
+    - name: Extra Task
+      ansible.builtin.shell: sleep 2
+      notify: extra_handler
+
+  post_tasks:
+    - name: Check if Web Server UP
+      ansible.builtin.uri:
+        url: http://servera.lab.example.com
+        return_content: true
+      register: out
+
+    - name: Print the output
+      ansible.builtin.debug:
+        msg: "{{ out }}"
+        
+    - name: Email to Customer UP Services
+      ansible.builtin.shell: sleep 2
+      notify:
+        - services_up
+
+
+  handlers:
+    - name: services_down
+      ansible.builtin.debug:
+        msg: "Instgram Down Sleep Now"
+
+    - name: services_up
+      ansible.builtin.debug:
+        msg: "Instagram up Start wasting Time NOW"
+    - name: extra_handler
+      ansible.builtin.debug:
+        msg: "2 Second NAP"
+
+  roles:
+    - role: web_server
+      become: true
+    # - role: community.cassandra.cassandra_linux

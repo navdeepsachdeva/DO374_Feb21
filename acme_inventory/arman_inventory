@@ -1,0 +1,23 @@
+## INIT Format means = symbol ##
+
+[test]
+serverc.lab.example.com
+172.25.250.11
+
+[all:vars]
+print_role_floor="Level 3 inventory file"
+
+[dev]
+servera.lab.example.com
+172.25.250.12
+serverb.lab.example.com print_role_floor="Level 8 inventory Host Var"
+
+serverd.lab.example.com t1=UU1
+
+[test:vars]
+t1=TT1
+
+[prod]
+172.25.250.10
+server[e:f].lab.example.com
+172.25.250.13

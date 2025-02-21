@@ -1,0 +1,15 @@
+- name: Collect Facts if not there
+  hosts: servera*
+  # gather_facts: true
+  tasks:
+  - name: Task 1 
+    ansible.builtin.debug:
+      msg: "{{ ansible_facts['architecture'] }}"
+
+- name: Use Facts if already collected in this RUN
+  hosts: servera*,serverb*
+  # gather_facts: true
+  tasks:
+  - name: Task 2
+    ansible.builtin.debug:
+      msg: "{{ ansible_memory_mb.real.free }}"

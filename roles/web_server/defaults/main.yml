@@ -1,0 +1,6 @@
+---
+# defaults file for web_server
+
+web_server_package: httpd
+web_server_content: "Level 2 Index Page"
+web_server_index_page: /var/www/html/index.html

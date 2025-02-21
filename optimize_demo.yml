@@ -1,0 +1,7 @@
+- name: Tags Demo
+  hosts: servera*
+  # gather_facts: true
+  tasks:
+  - name: Task 1 in Development
+    ansible.builtin.debug:
+      msg: "Task 1 for Development"

@@ -1,0 +1,11 @@
+- name: Playbook for Controller Test Inventory
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Print Inventory Variable
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} == {{ somevar }}"
+
+    - name: Print System Fact
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} == {{ ansible_default_ipv4.address }}"

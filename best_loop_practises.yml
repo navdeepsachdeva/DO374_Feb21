@@ -1,0 +1,20 @@
+- name: Privilege Escalation Demo
+  hosts: servera*
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Install multiple packages
+      ansible.builtin.dnf:
+        name:
+          - httpd
+          - vsftpd
+        state: present
+
+    - name: Start multiple Services
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: started
+      loop:
+        - httpd
+        - vsftpd

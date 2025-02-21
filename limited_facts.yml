@@ -1,0 +1,19 @@
+- name: Collect Facts if not there
+  hosts: servera*
+  gather_facts: false
+  tasks:
+  - name: Collect  Limited Facts
+    ansible.builtin.setup:
+      gather_subset:
+        - '!all'
+        - 'min'
+        - 'network'
+        - 'hardware'
+  - name: Task 1 
+    ansible.builtin.debug:
+      msg: |
+          {{ ansible_facts['architecture'] }}
+          {{ ansible_date_time.time }}
+          {{ ansible_default_ipv4.address }}
+          {{ ansible_devices.vda.size }}
+          {{ ansible_memory_mb.real.free }}

@@ -1,0 +1,24 @@
+print_role_floor: "Level 14 play vars_files"
+
+simple_list:
+  - ren
+  - therese
+  - arman
+  - dariusz
+
+complex_list:
+  - fn: rene
+    ln: l
+  - fn: therese
+    ln: p
+  - fn: dragisa
+    ln: m
+  - fn: kazi
+    ln: r
+
+
+user_dict:
+  rene: l
+  therese: p
+  dragisa: m
+  kazi: r

@@ -1,0 +1,7 @@
+collections:
+  - name: /build/vendor-dashboard-1.0.0.tar.gz
+    type: file
+  - name: /build/community-grafana-2.1.0.tar.gz
+    type: file
+  - name: /build/ansible-posix-1.4.0.tar.tar
+    type: file
